@@ -69,10 +69,7 @@ public class FedNativePythonSerialization implements FedSerialization {
             + " loaded.\");\n");
     // Define the serialized PyObject
     serializerCode.append(
-        String.format("PyObject *obj = %s;\n", varName) +
-        "PyObject *SerializerClass = PyObject_GetAttrString(global_serializer, \"Serializer\");\n" + 
-        "PyObject *object_serializer = PyObject_CallObject(SerializerClass, NULL);\n" +
-        "PyObject *serializer_serialize = PyObject_GetAttrString(object_serializer, \"serialize\");\n" +
+        "PyObject *serializer_serialize = PyObject_GetAttrString(global_serializer, \"serialize\");\n" +
         "PyObject *args = PyTuple_Pack(1, "+varName+");\n" +
         "PyObject *serialized_pyobject = PyObject_CallObject(serializer_serialize, args);\n" +
         "if (serialized_pyobject == NULL) {\n" +
@@ -109,9 +106,7 @@ public class FedNativePythonSerialization implements FedSerialization {
             + " loaded.\");\n");
     // Deserialize using Pickle
     deserializerCode.append(
-        "PyObject *SerializerClass = PyObject_GetAttrString(global_serializer, \"Serializer\");\n" + 
-        "PyObject *object_serializer = PyObject_CallObject(SerializerClass, NULL);\n" +
-        "PyObject *serializer_deserialize = PyObject_GetAttrString(object_serializer, \"deserialize\");\n" +
+        "PyObject *serializer_deserialize = PyObject_GetAttrString(global_serializer, \"deserialize\");\n" +
         "PyObject *args = PyTuple_Pack(1, message_byte_array);\n" +
         "PyObject *"+deserializedVarName+" = PyObject_CallObject(serializer_deserialize, args);\n"
     );
