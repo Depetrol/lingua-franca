@@ -35,7 +35,7 @@ jobs:
       - name: Deploy nightly release
         uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: "${{ secrets.NIGHTLY_BUILD }}"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: 'nightly'
           prerelease: true
           title: "Lingua Franca Nightly"
