@@ -63,28 +63,23 @@ public class FedNativePythonSerialization implements FedSerialization {
     serializerCode.append(
         "if (global_pickler == NULL) lf_print_error_and_exit(\"The pickle module is not"
             + " loaded.\");\n");
+    // Check that global_serializer is not null
+    serializerCode.append(
+        "if (global_serializer == NULL) lf_print_error_and_exit(\"The globalserializer module is not"
+            + " loaded.\");\n");
     // Define the serialized PyObject
-    serializerCode
-        .append(
-            "PyObject* serialized_pyobject = PyObject_CallMethod(global_pickler, \"dumps\", \"O\","
-                + " ")
-        .append(varName)
-        .append(");\n");
-
-    // Error check
-    serializerCode.append("if (serialized_pyobject == NULL) {\n");
-    serializerCode.append("    if (PyErr_Occurred()) PyErr_Print();\n");
     serializerCode.append(
-        "    lf_print_error_and_exit(\"Could not serialize serialized_pyobject.\");\n");
-    serializerCode.append("}\n");
-
-    serializerCode.append("Py_buffer " + serializedVarName + ";\n");
-    serializerCode.append(
-        "int returnValue = PyBytes_AsStringAndSize(serialized_pyobject, (char**)&"
-            + serializedVarName
-            + ".buf, &"
-            + serializedVarName
-            + ".len);\n");
+        "PyObject *serializer_serialize = PyObject_GetAttrString(global_serializer, \"serialize\");\n" +
+        "PyObject *args = PyTuple_Pack(1, "+varName+");\n" +
+        "PyObject *serialized_pyobject = PyObject_CallObject(serializer_serialize, args);\n" +
+        "if (serialized_pyobject == NULL) {\n" +
+        "    if (PyErr_Occurred()) PyErr_Print();\n" +
+        "    lf_print_error_and_exit(\"Could not serialize object.\");\n" +
+        "}\n" +
+        "Py_buffer "+serializedVarName+";\n" +
+        "int returnValue = PyBytes_AsStringAndSize(serialized_pyobject, (char**)&"+serializedVarName+".buf, &"+serializedVarName+".len);\n" +
+        ""
+    );
     // Error check
     serializerCode.append("if (returnValue == -1) {\n");
     serializerCode.append("    if (PyErr_Occurred()) PyErr_Print();\n");
@@ -105,11 +100,16 @@ public class FedNativePythonSerialization implements FedSerialization {
         .append("->token->value, ")
         .append(varName)
         .append("->token->length);\n");
+    // Check that global_serializer is not null
+    deserializerCode.append(
+        "if (global_serializer == NULL) lf_print_error_and_exit(\"The globalserializer module is not"
+            + " loaded.\");\n");
     // Deserialize using Pickle
     deserializerCode.append(
-        "PyObject* "
-            + deserializedVarName
-            + " = PyObject_CallMethod(global_pickler, \"loads\", \"O\", message_byte_array);\n");
+        "PyObject *serializer_deserialize = PyObject_GetAttrString(global_serializer, \"deserialize\");\n" +
+        "PyObject *args = PyTuple_Pack(1, message_byte_array);\n" +
+        "PyObject *"+deserializedVarName+" = PyObject_CallObject(serializer_deserialize, args);\n"
+    );
     // Error check
     deserializerCode.append("if (" + deserializedVarName + " == NULL) {\n");
     deserializerCode.append("    if (PyErr_Occurred()) PyErr_Print();\n");
