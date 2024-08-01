@@ -27,8 +27,8 @@ runs:
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
-        file: {{defaultContext}}:./core/src/lib/c/reactor-c/core/federated/RTI/rti.Dockerfile
-        context: {{defaultContext}}:./core/src/lib/c/reactor-c/
+        file: "{{defaultContext}}:./core/src/lib/c/reactor-c/core/federated/RTI/rti.Dockerfile"
+        context: "{{defaultContext}}:./core/src/lib/c/reactor-c/"
         push: true
         tags: depetrol/rti:${{ inputs.tag }}
 
