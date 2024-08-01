@@ -18,6 +18,6 @@ jobs:
       - name: Build and push RTI to Docker Hub
         uses: ./.github/actions/push-rti-docker
         with:
-          tag: latest
+          tag: master
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
