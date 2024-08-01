@@ -27,5 +27,5 @@ runs:
         file: src/lib/c/reactor-c/core/federated/RTI/rti.Dockerfile
         context: src/lib/c/reactor-c/
         push: true
-        tags: lflang/rti:${{ inputs.tag }}
+        tags: depetrol/rti:${{ inputs.tag }}
 
