@@ -15,8 +15,6 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - name: Print file structure
-        run: ls -R
       - name: Build and push RTI to Docker Hub
         uses: ./.github/actions/push-rti-docker
         with:
