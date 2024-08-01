@@ -1,0 +1,16 @@
+name: Push RTI to Docker Hub
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    name: Build and push RTI to Docker Hub
+    steps:
+      - name: Build and push RTI to Docker Hub
+        uses: ./.github/actions/push-rti-docker
+        with:
+          tag: latest
