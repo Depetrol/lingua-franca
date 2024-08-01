@@ -14,8 +14,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: cd ${{github.action_path}}
-      shell: bash
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Login to Docker Hub
@@ -23,11 +21,14 @@ runs:
       with:
         username: ${{ inputs.DOCKERHUB_USERNAME }}
         password: ${{ inputs.DOCKERHUB_TOKEN }}
+    - name: Print File Sturcture
+      run: ls -R
+      shell: bash
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
-        file: ./core/src/lib/c/reactor-c/core/federated/RTI/rti.Dockerfile
-        context: ./core/src/lib/c/reactor-c/
+        file: {{defaultContext}}:./core/src/lib/c/reactor-c/core/federated/RTI/rti.Dockerfile
+        context: {{defaultContext}}:./core/src/lib/c/reactor-c/
         push: true
         tags: depetrol/rti:${{ inputs.tag }}
 
