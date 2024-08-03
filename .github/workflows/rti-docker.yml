@@ -24,15 +24,19 @@ jobs:
           echo "lf_version=$LF_VERSION"
           echo "lf_version=$LF_VERSION" >> $GITHUB_ENV
       - name: Build and push RTI to Docker Hub
+        if: ${{ endsWith(env.lf_version, '-snapshot') }}
         uses: ./.github/actions/push-rti-docker
         with:
           tag: ${{ env.lf_version }}
+          latest: false
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Update latest (released versions only)
+        if: ${{ !endsWith(env.lf_version, '-snapshot') }}
         uses: ./.github/actions/push-rti-docker
         with:
-          tag: latest
+          tag: ${{ env.lf_version }}
+          latest: true
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        if: ${{ !endsWith(env.lf_version, '-snapshot') }}
